@@ -1,10 +1,12 @@
 #分析服务器发送来的PORT信息，和服务器的port建立数据连接。
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import ftplib
 import os
 import socket
 import sys
+import json
+import time
 
 HOST = '125.62.27.92'
 DIRN = '/'
@@ -66,15 +68,71 @@ def main():
     s.connect((HOST,port))
     print('Socket connect!')
     print(f.sendcmd('LIST'))
-    print(s.recv(10240))
+    print(s.recv(1024))
+    #f.retrlines('DIR')
+    #print(s.recv(1024))
+    #file_handler = open('1.ts', 'wb').write
+
+    #f.retrbinary('RETR 1.ts', file_handler)
+    #s.send('1.ts'.encode('utf-8'))
+
+    while True:
+        filename = input(">>:").strip().encode("utf-8")
+        s.send(filename)
+        #s_size = int(s.recv(1024).decode())
+        s_size = len(s.recv(1024))
+        recive_size = 0
+        date = ""
+        while recive_size < s_size:
+            date += date
+            date = s.recv(1024).decode("utf-8")
+            recive_size += len(date)
+        print(s_size, recive_size)
+        print(date)
+    '''count = 0
+    with open("[new]1.ts", "wb") as file:
+        while count < 10:
+            print("count",count)
+
+            data = s.recv(1024)
+            print(len(data))
+            file.write(data)
+            count += 1
+            time.sleep(0.5)
+    '''
+
 
     #print(f.retrlines('LIST'))
+    #print(s.recv(1024))
     #get file from ftp and print in screen
-    #print f.sendcmd('RETR wordless10m.docx')    　　　　　
-    # #print s.recv(1024)    　　　　
-    #print 'translate successfully!'
+    #print(f.sendcmd('RETR 1.ts'))     　　　　　
+    #print(s.recv(1024))  　　
+#s.close()
+    '''s.send('1.ts'.encode('utf-8'))
+    ts_header = s.recv(500)
+    header = json.loads(ts_header.decode('utf-8'))
+    #filename = header['filename']
+    filesize = header['size']
+    file = open('1.ts', 'wb')
+    recvsize = 0
+    while recvsize < filesize:
+        if filesize - recvsize < 1024:
+            data = s.recv(filesize - recvsize)
+        else:
+            data = s.recv(1024)
+        recvsize += len(data)
+        file.write(data)
+    else:
+        file.close()
+    '''
+    print('translate successfully!')
 
     f.quit()
     return
 if __name__ == '__main__':
      main()
+
+    #filename = '1.ts'
+    #bufsize = 1024
+    #file_handler = open('1.ts', 'wb').write  # 以写模式在本地打开文件
+    #f.retrbinary('RETR %s' % filename, file_handler, bufsize)

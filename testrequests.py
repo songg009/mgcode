@@ -1,4 +1,12 @@
 import requests
+import pycurl
+import os
+
+ftpurl = 'ftp://mgtv:mgtv123456@125.62.27.92/1.ts'
+weburl = 'http://192.168.18.251:83'
+pos = 0
+
+#f = open('1.ts', 'wb')
 
 def getHTMLText(url):
     try:
@@ -10,7 +18,23 @@ def getHTMLText(url):
     except:
         return "error！！！"
 
+def getFTPfile(url):
+    #response = StringIO.StringIO()
+    os.makedirs('files')
+    os.chdir('files')
+    f = open('1.ts', 'wb')
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.NOPROGRESS, 0)
+    #c.setopt(c.WRITEFUNCTION, f.write)
+    c.setopt(c.WRITEDATA, f)
+    #c.setopt(c.HTTPHEADER, ['Content-Type: application/json', 'Accept-Charset: UTF-8'])
+    #c.setopt(c.POSTFIELDS, '@request.json')
+    c.perform()
+    c.close()
+
 if __name__ == "__main__":
-    #url = "http://192.168.18.251:83"
-    url = "175.6.15.136"
-    print(getHTMLText(url))
+    if pos == 0:
+        getFTPfile(ftpurl)
+    else:
+        print(getHTMLText(weburl))
