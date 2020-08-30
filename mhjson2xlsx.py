@@ -4,7 +4,7 @@ import xmltodict
 
 xmlFilePath = r"E:\myDocument\mgwork\消息工单\集合.txt"
 jsonFileName = 'jsonjh.txt'
-xml_file = open(xmlFilePath,'r', encoding='utf-8')
+xml_file = open(xmlFilePath, 'r', encoding='utf-8')
 xml_str = xml_file.read()
 
 jsonStr = json.dumps(xmltodict.parse(xml_str), indent=4)
